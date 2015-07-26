@@ -42,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         list = db.getAllBooks(USER_ID);
         Log.i("Result", "size : " + String.valueOf(list.size()));
 
+        /*int s = list.size();
+        for(int counter = 0; counter < s; counter++){
+            db.deleteBook(list.get(counter));
+        }*/
+
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         btnAdd = (Button) findViewById(R.id.btnAdd);
@@ -113,16 +118,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
-/*// add Books
-db.addFavoritePlaces(new FavoritePlacesModel("Android Application Development Cookbook","Wei Meng Lee"));
-db.addFavoritePlaces(new FavoritePlacesModel("Android Programming: The Big Nerd Ranch Guide","Bill Phillips and Brian Hardy"));
-db.addFavoritePlaces(new FavoritePlacesModel("Learn Android App Development","Wallace Jackson"));
-
-// delete one book
-db.deleteBook(list.get(0));
-
-//getAllBooks
-db.getAllBooks();
-FavoritePlacesModel favoritePlacesModel = new FavoritePlacesModel();
-b.deleteBook(favoritePlacesModel);*/
