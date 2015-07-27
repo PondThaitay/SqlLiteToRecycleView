@@ -32,6 +32,7 @@ public class SqlLiteFavoritePlaces extends SQLiteOpenHelper {
                 "userId TEXT, " +
                 "name TEXT, " +
                 "address TEXT, " +
+                "path TEXT, " +
                 "lat TEXT, " +
                 "long TEXT )";
         // create books table
@@ -53,10 +54,11 @@ public class SqlLiteFavoritePlaces extends SQLiteOpenHelper {
     private static final String KEY_USER_ID = "userId";
     private static final String KEY_NAME = "name";
     private static final String KEY_ADDRESS = "address";
+    private static final String KEY_PATH_IMAGE = "path";
     private static final String KEY_LAT = "lat";
     private static final String KEY_LONG = "long";
     private static final String[] COLUMNS = {KEY_ID, KEY_USER_ID, KEY_NAME
-            , KEY_ADDRESS, KEY_LAT, KEY_LONG};
+            , KEY_ADDRESS, KEY_PATH_IMAGE, KEY_LAT, KEY_LONG};
 
     public void addFavoritePlaces(FavoritePlacesModel favoritePlacesModel) {
         Log.i("addFavoritePlaces", favoritePlacesModel.toString());
@@ -67,6 +69,7 @@ public class SqlLiteFavoritePlaces extends SQLiteOpenHelper {
         values.put(KEY_USER_ID, favoritePlacesModel.getUserId());
         values.put(KEY_NAME, favoritePlacesModel.getName());
         values.put(KEY_ADDRESS, favoritePlacesModel.getAddress());
+        values.put(KEY_PATH_IMAGE, favoritePlacesModel.getPathImage());
         values.put(KEY_LAT, favoritePlacesModel.getLat());
         values.put(KEY_LONG, favoritePlacesModel.getLng());
         // 3. insert
@@ -98,8 +101,9 @@ public class SqlLiteFavoritePlaces extends SQLiteOpenHelper {
                 favoritePlacesModel.setUserId(cursor.getString(1));
                 favoritePlacesModel.setName(cursor.getString(2));
                 favoritePlacesModel.setAddress(cursor.getString(3));
-                favoritePlacesModel.setLat(cursor.getString(4));
-                favoritePlacesModel.setLng(cursor.getString(5));
+                favoritePlacesModel.setPathImage(cursor.getString(4));
+                favoritePlacesModel.setLat(cursor.getString(5));
+                favoritePlacesModel.setLng(cursor.getString(6));
                 // Add book to books
                 list.add(favoritePlacesModel);
             } while (cursor.moveToPrevious());

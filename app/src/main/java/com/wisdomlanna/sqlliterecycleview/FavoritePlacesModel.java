@@ -9,17 +9,20 @@ public class FavoritePlacesModel {
     private String userId;
     private String name;
     private String address;
+    private String pathImage;
     private String lat;
     private String lng;
 
     public FavoritePlacesModel() {
     }
 
-    public FavoritePlacesModel(String userId, String name, String address, String lat, String lng) {
+    public FavoritePlacesModel(String userId, String name, String address
+            , String path, String lat, String lng) {
         super();
         this.userId = userId;
         this.name = name;
         this.address = address;
+        this.pathImage = path;
         this.lat = lat;
         this.lng = lng;
     }
@@ -74,6 +77,14 @@ public class FavoritePlacesModel {
 
     @Override
     public String toString() {
-        return id + "/" + userId + "/" + name + "/" + address + "/" + lat + "/" + lng;
+        return id + ">" + userId + ">" + name + ">" + address + ">" + pathImage + ">" + lat + ">" + lng;
+    }
+
+    public String getPathImage() {
+        return pathImage;
+    }
+
+    public void setPathImage(String pathImage) {
+        this.pathImage = pathImage;
     }
 }
