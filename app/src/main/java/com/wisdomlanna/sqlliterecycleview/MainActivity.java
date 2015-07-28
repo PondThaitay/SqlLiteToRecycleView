@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -27,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private SqlLiteFavoritePlaces db;
     private List<FavoritePlacesModel> list;
     private static final String USER_ID = "002";
+    private int lastPosition = -1;
+    private int s;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,8 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         list = db.getAllBooks(USER_ID);
         Log.i("Result", "size : " + String.valueOf(list.size()));
-
-        int s = list.size();
+        s = list.size();
         for (int counter = 0; counter < s; counter++) {
             //db.deleteBook(list.get(counter));
             String result = String.valueOf(list.get(counter));
@@ -77,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
                         , "Chang Phueak, Chiang Mai, Thailand"
                         , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.4", "18.4.4"));
                 //recyclerView.getAdapter().notifyDataSetChanged();
+                list = db.getAllBooks(USER_ID);
+                Log.i("Result", "size : " + String.valueOf(list.size()));
+                s = list.size();
+                recyclerView.getAdapter().notifyDataSetChanged();
             }
         });
 
@@ -84,6 +92,12 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()
                 , LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(new ListDataPlacesAdapter());
+       /* recyclerView.setItemAnimator(new FadeInAnimator());
+        final MyAdapter adapter = new MyAdapter(this, list);
+        AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
+        ScaleInAnimationAdapter scaleAdapter = new ScaleInAnimationAdapter(alphaAdapter);
+        scaleAdapter.setFirstOnly(false);
+        recyclerView.setAdapter(scaleAdapter);*/
     }
 
     class ViewHolderFrom extends RecyclerView.ViewHolder {
@@ -92,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         private TextView tvAddress;
         private ImageView imIcon;
         View parentView;
+        FrameLayout container;
 
         public ViewHolderFrom(final View itemView) {
             super(itemView);
@@ -99,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             tvName = (TextView) itemView.findViewById(R.id.tvNameList);
             tvAddress = (TextView) itemView.findViewById(R.id.tvAddress);
             imIcon = (ImageView) itemView.findViewById(R.id.imIcon);
+            container = (FrameLayout) itemView.findViewById(R.id.container);
         }
     }
 
@@ -149,11 +165,25 @@ public class MainActivity extends AppCompatActivity {
                             , Toast.LENGTH_SHORT).show();
                 }
             });
+
+            int duration = 1000;
+            setAnimation(viewHolderFrom.container, i, duration);
         }
 
         @Override
         public int getItemCount() {
-            return list.size();
+            return s;
+        }
+    }
+
+    private void setAnimation(View viewToAnimate, int position, int duration) {
+        // If the bound view wasn't previously displayed on screen, it's animated
+        if (position > lastPosition) {
+            Animation animation = AnimationUtils.loadAnimation(getApplicationContext()
+                    , R.anim.anim_list);
+            animation.setDuration(duration);
+            viewToAnimate.startAnimation(animation);
+            lastPosition = position;
         }
     }
 }
