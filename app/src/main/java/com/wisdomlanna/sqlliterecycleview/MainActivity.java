@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SqlLiteFavoritePlaces db;
     private List<FavoritePlacesModel> list;
-    private static final String USER_ID = "002";
+    private static final String USER_ID = "001";
     private int lastPosition = -1;
     private int s;
 
@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         db = new SqlLiteFavoritePlaces(this);
 
-       /* db.addFavoritePlaces(new FavoritePlacesModel("001", "CentralFestival Chiangmai"
+        db.addFavoritePlaces(new FavoritePlacesModel("001", "CentralFestival Chiangmai"
                 , "Fa Ham, Chiang Mai, Thailand"
                 , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.1", "18.1.1"));
         db.addFavoritePlaces(new FavoritePlacesModel("001", "Central Department Store (Chiang Mai Branch)"
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                 , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.2", "18.2.2"));
         db.addFavoritePlaces(new FavoritePlacesModel("001", "Central Hill Place"
                 , "ตำบล สุเทพ, เชียงใหม่, ประเทศไทย"
-                , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.3", "18.3.3"));*/
+                , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.3", "18.3.3"));
 
         list = db.getAllBooks(USER_ID);
         Log.i("Result", "size : " + String.valueOf(list.size()));
@@ -77,12 +77,13 @@ public class MainActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.addFavoritePlaces(new FavoritePlacesModel("002", "MAYA Lifestyle Shopping Center"
+               /* db.addFavoritePlaces(new FavoritePlacesModel("002", "MAYA Lifestyle Shopping Center"
                         , "Chang Phueak, Chiang Mai, Thailand"
                         , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.4", "18.4.4"));
                 //recyclerView.getAdapter().notifyDataSetChanged();
                 list = db.getAllBooks(USER_ID);
-                Log.i("Result", "size : " + String.valueOf(list.size()));
+                Log.i("Result", "size : " + String.valueOf(list.size()));*/
+                db.deleteBook(1);
                 s = list.size();
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
@@ -163,6 +164,12 @@ public class MainActivity extends AppCompatActivity {
                             + "userId :" + userId + "\n" + "name :" + name + "\n"
                             + "address :" + address + "\n" + "lat :" + lat + "\t" + "long :" + lng
                             , Toast.LENGTH_SHORT).show();
+                    db.deleteBook(Integer.parseInt(id));
+                    //recyclerView.removeView(v);
+                    list = db.getAllBooks(USER_ID);
+                    s = list.size();
+                    recyclerView.getAdapter().notifyItemRemoved(i);
+                    recyclerView.getAdapter().notifyDataSetChanged();
                 }
             });
 

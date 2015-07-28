@@ -113,15 +113,13 @@ public class SqlLiteFavoritePlaces extends SQLiteOpenHelper {
     }
 
     // Deleting single book
-    public void deleteBook(FavoritePlacesModel book) {
+    public void deleteBook(int id) {
         // 1. get reference to writable DB
         SQLiteDatabase db = this.getWritableDatabase();
         // 2. delete
-        db.delete(TABLE_FAVORITE,
-                KEY_ID + " = ?",
-                new String[]{String.valueOf(book.getId())});
+        db.delete(TABLE_FAVORITE, KEY_ID + " = " + id, null);
         // 3. close
         db.close();
-        Log.i("deleteBook", book.toString());
+        //Log.i("deleteBook", book.toString());
     }
 }
