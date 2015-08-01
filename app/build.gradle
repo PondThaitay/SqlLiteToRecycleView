@@ -25,4 +25,12 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'jp.wasabeef:recyclerview-animators:1.2.1'
+    compile 'co.dift.ui.swipetoaction:library:1.1'
+    compile 'com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.7.3'
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.hudomju:swipe-to-dismiss-undo:1.0'
+    compile 'com.github.brnunes:swipeablerecyclerview:1.0.1'
+    compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.balysv:material-ripple:1.0.2'
+    compile 'com.github.traex.rippleeffect:library:1.3'
 }

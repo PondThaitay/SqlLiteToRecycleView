@@ -1,6 +1,8 @@
 package com.wisdomlanna.sqlliterecycleview;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,9 +19,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andexert.library.RippleView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import co.dift.ui.SwipeToAction;
+import jp.wasabeef.recyclerview.animators.FadeInAnimator;
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.ScaleInAnimationAdapter;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -32,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String USER_ID = "001";
     private int lastPosition = -1;
     private int s;
+    private SwipeToAction swipeToAction;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         db = new SqlLiteFavoritePlaces(this);
 
-        db.addFavoritePlaces(new FavoritePlacesModel("001", "CentralFestival Chiangmai"
+       /* db.addFavoritePlaces(new FavoritePlacesModel("001", "CentralFestival Chiangmai"
                 , "Fa Ham, Chiang Mai, Thailand"
                 , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.1", "18.1.1"));
         db.addFavoritePlaces(new FavoritePlacesModel("001", "Central Department Store (Chiang Mai Branch)"
@@ -48,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.2", "18.2.2"));
         db.addFavoritePlaces(new FavoritePlacesModel("001", "Central Hill Place"
                 , "ตำบล สุเทพ, เชียงใหม่, ประเทศไทย"
-                , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.3", "18.3.3"));
+                , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.3", "18.3.3"));*/
 
         list = db.getAllBooks(USER_ID);
         Log.i("Result", "size : " + String.valueOf(list.size()));
@@ -77,13 +86,11 @@ public class MainActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               /* db.addFavoritePlaces(new FavoritePlacesModel("002", "MAYA Lifestyle Shopping Center"
+                db.addFavoritePlaces(new FavoritePlacesModel("001", "MAYA Lifestyle Shopping Center"
                         , "Chang Phueak, Chiang Mai, Thailand"
                         , "http://maps.gstatic.com/mapfiles/place_api/icons/lodging-71.png", "18.4", "18.4.4"));
-                //recyclerView.getAdapter().notifyDataSetChanged();
                 list = db.getAllBooks(USER_ID);
-                Log.i("Result", "size : " + String.valueOf(list.size()));*/
-                db.deleteBook(1);
+                Log.i("Result", "size : " + String.valueOf(list.size()));
                 s = list.size();
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
@@ -92,13 +99,23 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.nearby_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()
                 , LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(new ListDataPlacesAdapter());
-       /* recyclerView.setItemAnimator(new FadeInAnimator());
-        final MyAdapter adapter = new MyAdapter(this, list);
+        recyclerView.setItemAnimator(new FadeInAnimator());
+        final ListDataPlacesAdapter adapter = new ListDataPlacesAdapter();
         AlphaInAnimationAdapter alphaAdapter = new AlphaInAnimationAdapter(adapter);
         ScaleInAnimationAdapter scaleAdapter = new ScaleInAnimationAdapter(alphaAdapter);
         scaleAdapter.setFirstOnly(false);
-        recyclerView.setAdapter(scaleAdapter);*/
+        recyclerView.setAdapter(scaleAdapter);
+    }
+
+    private void displaySnackbar(String text, String actionName, View.OnClickListener action) {
+        Snackbar snack = Snackbar.make(findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
+                .setAction(actionName, action);
+
+        View v = snack.getView();
+        v.setBackgroundColor(getResources().getColor(R.color.PrimaryDarkColor));
+        ((TextView) v.findViewById(android.support.design.R.id.snackbar_text)).setTextColor(Color.WHITE);
+        ((TextView) v.findViewById(android.support.design.R.id.snackbar_action)).setTextColor(Color.BLACK);
+        snack.show();
     }
 
     class ViewHolderFrom extends RecyclerView.ViewHolder {
@@ -108,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         private ImageView imIcon;
         View parentView;
         FrameLayout container;
+        private RippleView rippleView;
 
         public ViewHolderFrom(final View itemView) {
             super(itemView);
@@ -116,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
             tvAddress = (TextView) itemView.findViewById(R.id.tvAddress);
             imIcon = (ImageView) itemView.findViewById(R.id.imIcon);
             container = (FrameLayout) itemView.findViewById(R.id.container);
+            rippleView = (RippleView) itemView.findViewById(R.id.more);
         }
     }
 
@@ -142,7 +161,6 @@ public class MainActivity extends AppCompatActivity {
             progressBar.setVisibility(View.INVISIBLE);
             viewHolderFrom.tvName.setText(name);
             viewHolderFrom.tvAddress.setText(address);
-
             if (pathImage.length() > 0) {
                 Picasso.with(getApplicationContext())
                         .load(pathImage)
@@ -157,24 +175,26 @@ public class MainActivity extends AppCompatActivity {
                         .into(viewHolderFrom.imIcon);
             }
 
-            viewHolderFrom.parentView.setOnClickListener(new View.OnClickListener() {
+            viewHolderFrom.rippleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Toast.makeText(getApplicationContext(), "id :" + id + "\n"
                             + "userId :" + userId + "\n" + "name :" + name + "\n"
                             + "address :" + address + "\n" + "lat :" + lat + "\t" + "long :" + lng
                             , Toast.LENGTH_SHORT).show();
-                    db.deleteBook(Integer.parseInt(id));
-                    //recyclerView.removeView(v);
-                    list = db.getAllBooks(USER_ID);
-                    s = list.size();
-                    recyclerView.getAdapter().notifyItemRemoved(i);
-                    recyclerView.getAdapter().notifyDataSetChanged();
+
+                    viewHolderFrom.rippleView.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+                        @Override
+                        public void onComplete(RippleView rippleView) {
+                            db.deleteBook(Integer.parseInt(id));
+                            list = db.getAllBooks(USER_ID);
+                            s = list.size();
+                            recyclerView.getAdapter().notifyItemRemoved(i);
+                            recyclerView.getAdapter().notifyDataSetChanged();
+                        }
+                    });
                 }
             });
-
-            int duration = 1000;
-            setAnimation(viewHolderFrom.container, i, duration);
         }
 
         @Override
